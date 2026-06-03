@@ -4,6 +4,8 @@ Version: 0.1.0
 Authors@R: person("Gopi Nath", "Vajpai",
     role  = c("aut", "cre"),
     email = "gvajpai@udel.edu")
+Depends:
+    R (>= 4.1.0)
 Description: Expands seed dictionaries for dining and hospitality research
     using word embeddings pre-trained on 512,140 Yelp restaurant reviews.
     Provides restaurant-domain word vectors out of the box — no setup
