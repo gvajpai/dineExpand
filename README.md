@@ -211,4 +211,4 @@ If you use `dineExpand` in published research, please cite:
 
 ## License
 
-MIT © 2025 Gopi Nath Vajpai
+MIT © 2026 Gopi Nath Vajpai
