@@ -203,7 +203,7 @@ would rank far lower in Wikipedia-trained embeddings.
 
 If you use `dineExpand` in published research, please cite:
 
-> Vajpai, G. N. (2025). *dineExpand: Dining-Specific Semantic Dictionary
+> Vajpai, G. N. (2026). *dineExpand: Dining-Specific Semantic Dictionary
 > Expander for Hospitality Research*. R package version 0.1.0.
 > https://github.com/gvajpai/dineExpand
 
