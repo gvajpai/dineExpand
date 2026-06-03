@@ -1,0 +1,20 @@
+# R build artefacts
+*.Rcheck/
+*.tar.gz
+*.o
+*.so
+
+# RStudio
+.Rproj.user/
+*.Rproj
+
+# R environment
+.RData
+.Rhistory
+
+# OS
+.DS_Store
+Thumbs.db
+
+# vectors file — too large for git, hosted on GitHub releases instead
+*.rds
