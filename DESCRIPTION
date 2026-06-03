@@ -1,0 +1,31 @@
+Package: dineExpand
+Title: Dining-Specific Semantic Dictionary Expander
+Version: 0.1.0
+Authors@R: person("Gopi Nath", "Vajpai",
+    role  = c("aut", "cre"),
+    email = "gvajpai@udel.edu")
+Description: Expands seed dictionaries for dining and hospitality research
+    using word embeddings pre-trained on 512,140 Yelp restaurant reviews.
+    Provides restaurant-domain word vectors out of the box — no setup
+    required beyond a one-time 33 MB download. Supports any theoretical
+    construct relevant to dining research: revisit intention, food neophobia,
+    authenticity, service quality, and more. Built on top of 'lexiExpand'
+    for the core similarity engine, with dining-specific defaults and
+    a dedicated vector training function for researchers who wish to train
+    on their own restaurant corpus.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+VignetteBuilder: knitr
+Imports: cli (>= 3.0.0), lexiExpand, rappdirs (>= 0.3.3)
+Suggests: quanteda (>= 3.0.0), text2vec (>= 0.6.0), testthat (>=
+        3.0.0), knitr, rmarkdown
+Remotes: gvajpai/lexiExpand
+Config/testthat/edition: 3
+URL: https://github.com/gvajpai/dineExpand
+BugReports: https://github.com/gvajpai/dineExpand/issues
+NeedsCompilation: no
+Packaged: 2026-06-03 00:31:10 UTC; root
+Author: Gopi Nath Vajpai [aut, cre]
+Maintainer: Gopi Nath Vajpai <gvajpai@udel.edu>

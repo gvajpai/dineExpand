@@ -1,0 +1,169 @@
+---
+title: "Getting Started with dineExpand"
+author: "Gopi Nath Vajpai"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with dineExpand}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## Why dineExpand?
+
+Dictionary-based text analysis is widely used in hospitality research —
+but building a dictionary that captures how diners *actually* write is
+difficult. General-purpose embeddings trained on Wikipedia or news text
+don't know that "umami" belongs near "flavor", that "gastropub" relates
+to "ambience", or that "waitstaff" is central to service quality.
+
+`dineExpand` solves this with word embeddings trained on **512,140 Yelp
+restaurant reviews**. Any hospitality construct — revisit intention, food
+neophobia, authenticity, price perception — can be expanded with a single
+function call.
+
+---
+
+## Installation
+
+```{r install}
+# install.packages("remotes")
+remotes::install_github("gvajpai/dineExpand")
+```
+
+---
+
+## Step 1 — Load restaurant vectors (once)
+
+The vectors are downloaded from GitHub (~33 MB) and cached permanently.
+All future calls load from cache in seconds.
+
+```{r load}
+library(dineExpand)
+
+vecs <- load_dining_vectors()
+#> ! Downloading restaurant GloVe vectors (~33 MB). This happens only once.
+#> i Trained on 512,140 Yelp restaurant reviews.
+#> v Vectors cached at: ~/.local/share/dineExpand/yelp_restaurant_glove_100d.rds
+#>   Loaded 98 432 words × 100 dimensions.
+```
+
+---
+
+## Example constructs
+
+### Revisit intention
+
+```{r revisit}
+expand_dining(
+  seed        = c("revisit", "return", "loyalty"),
+  vectors     = vecs,
+  interactive = FALSE
+)
+#>          word similarity      seed pct_match
+#> 1      repeat      0.831    return       83%
+#> 2  definitely      0.819    return       82%
+#> 3  allegiance      0.812    loyalty      81%
+#> 4      coming      0.803    return       80%
+#> 5  patronize   0.797    revisit      80%
+```
+
+### Food neophobia
+
+```{r neophobia}
+expand_dining(
+  seed        = c("adventurous", "novel", "unfamiliar", "exotic"),
+  seed_mode   = "centroid",
+  vectors     = vecs,
+  interactive = FALSE
+)
+```
+
+### Authenticity
+
+```{r authenticity}
+expand_dining(
+  seed        = c("authentic", "traditional", "genuine", "local"),
+  vectors     = vecs,
+  interactive = FALSE
+)
+```
+
+### Service quality
+
+```{r service}
+expand_dining(
+  seed        = c("attentive", "courteous", "prompt", "helpful"),
+  vectors     = vecs,
+  interactive = FALSE
+)
+```
+
+---
+
+## Expanding a full lexicon
+
+Supply any two-column data frame (word + dimension) to expand all
+dimensions at once:
+
+```{r lexicon}
+my_dict <- data.frame(
+  word      = c("aroma",     "flavor",    "texture",
+                "delighted", "excited",   "moved",
+                "revisit",   "return",    "loyal"),
+  dimension = c("sensory",   "sensory",   "sensory",
+                "affect",    "affect",    "affect",
+                "revisit",   "revisit",   "revisit")
+)
+
+candidates <- expand_dining_lexicon(my_dict, vectors = vecs, threshold = 0.65)
+table(candidates$dimension)
+```
+
+---
+
+## Export and score
+
+```{r export}
+library(quanteda)
+
+# Export to quanteda dictionary
+dict <- lexiExpand::export_dict(
+  candidates,
+  seed   = my_dict$word,
+  name   = "dining_constructs",
+  format = "quanteda"
+)
+
+# Score reviews
+reviews <- corpus(c(
+  r1 = "The aroma was captivating and the flavors extraordinary.",
+  r2 = "We will definitely return — truly loyal customers now.",
+  r3 = "Staff were attentive, courteous, and incredibly prompt."
+))
+
+dfm(tokens(reviews)) |>
+  dfm_lookup(dictionary = dict) |>
+  convert(to = "data.frame")
+```
+
+---
+
+## Train on your own corpus
+
+```{r train}
+library(data.table)
+reviews <- fread("my_restaurant_reviews.csv")
+
+vecs_custom <- train_dining_vectors(
+  texts      = reviews$text,
+  dims       = 100L,
+  cache_path = "~/my_vectors.rds"
+)
+
+expand_dining(c("aroma", "flavor"), vectors = vecs_custom)
+```
